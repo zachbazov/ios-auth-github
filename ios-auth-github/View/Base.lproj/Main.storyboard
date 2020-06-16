@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="vsq-to-fgj">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Navigation Controller-->
+        <scene sceneID="5Q5-f0-LDv">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" navigationBarHidden="YES" id="vsq-to-fgj" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="cOt-y8-K17">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="UNI-9H-RUU"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="q3n-Yt-lHb" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1457" y="39"/>
+        </scene>
+        <!--Sign View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="SignViewController" customModule="SignMethods" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KfA-Ty-8gd" userLabel="Github Button">
+                                <rect key="frame" x="107" y="428" width="200" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="200" id="1zb-Gs-G6i"/>
+                                    <constraint firstAttribute="height" constant="40" id="3QI-Za-pOt"/>
+                                </constraints>
+                                <state key="normal" title="Sign with GitHub"/>
+                                <connections>
+                                    <action selector="githubButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="E6o-wQ-Huz"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="KfA-Ty-8gd" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="Zs2-Ki-WEr"/>
+                            <constraint firstItem="KfA-Ty-8gd" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="h7y-Zd-aDH"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="d4W-Jg-yWH"/>
+                    <connections>
+                        <outlet property="githubButton" destination="KfA-Ty-8gd" id="Cpe-qi-Ccd"/>
+                        <segue destination="aUc-lI-eJn" kind="presentation" identifier="segueWorkspace" modalPresentationStyle="fullScreen" modalTransitionStyle="coverVertical" id="cgf-oV-9lW"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-635" y="39"/>
+        </scene>
+        <!--Workspace View Controller-->
+        <scene sceneID="TjQ-ht-46T">
+            <objects>
+                <viewController id="aUc-lI-eJn" customClass="WorkspaceViewController" customModule="SignMethods" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="hv4-b1-ExI">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XhL-WE-bN2">
+                                <rect key="frame" x="334" y="76" width="48" height="30"/>
+                                <state key="normal" title="Logout"/>
+                                <connections>
+                                    <segue destination="1u2-Da-Z66" kind="unwind" identifier="unwindSegueSign" unwindAction="unwindToSignVCWithSegue:" id="ekR-Bu-IqB"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="0.73992223173515981" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="KKX-WC-Y38" firstAttribute="trailing" secondItem="XhL-WE-bN2" secondAttribute="trailing" constant="32" id="LVa-TE-dXw"/>
+                            <constraint firstItem="XhL-WE-bN2" firstAttribute="top" secondItem="KKX-WC-Y38" secondAttribute="top" constant="32" id="Tsn-cQ-83a"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="KKX-WC-Y38"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="aM0-hQ-nI5"/>
+                    <connections>
+                        <outlet property="logoutButton" destination="XhL-WE-bN2" id="woT-H5-J2F"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="y76-dq-IaS" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <exit id="1u2-Da-Z66" userLabel="Exit" sceneMemberID="exit"/>
+            </objects>
+            <point key="canvasLocation" x="230" y="39"/>
+        </scene>
+    </scenes>
+</document>
