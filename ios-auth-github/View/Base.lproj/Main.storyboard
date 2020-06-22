@@ -62,13 +62,17 @@
         <!--Workspace View Controller-->
         <scene sceneID="TjQ-ht-46T">
             <objects>
-                <viewController id="aUc-lI-eJn" customClass="WorkspaceViewController" customModule="ios_auth_github" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="workspaceViewController" id="aUc-lI-eJn" customClass="WorkspaceViewController" customModule="ios_auth_github" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="hv4-b1-ExI">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XhL-WE-bN2">
-                                <rect key="frame" x="334" y="76" width="48" height="30"/>
+                                <rect key="frame" x="107" y="428" width="200" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="200" id="gLS-Oi-dOj"/>
+                                    <constraint firstAttribute="height" constant="40" id="tkH-Kg-yv6"/>
+                                </constraints>
                                 <state key="normal" title="Logout"/>
                                 <connections>
                                     <action selector="logoutButtonTapped:" destination="aUc-lI-eJn" eventType="touchUpInside" id="8Ce-Qc-yLm"/>
@@ -76,10 +80,10 @@
                                 </connections>
                             </button>
                         </subviews>
-                        <color key="backgroundColor" white="0.73992223173515981" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="KKX-WC-Y38" firstAttribute="trailing" secondItem="XhL-WE-bN2" secondAttribute="trailing" constant="32" id="LVa-TE-dXw"/>
-                            <constraint firstItem="XhL-WE-bN2" firstAttribute="top" secondItem="KKX-WC-Y38" secondAttribute="top" constant="32" id="Tsn-cQ-83a"/>
+                            <constraint firstItem="XhL-WE-bN2" firstAttribute="centerY" secondItem="hv4-b1-ExI" secondAttribute="centerY" id="GGO-3i-83E"/>
+                            <constraint firstItem="XhL-WE-bN2" firstAttribute="centerX" secondItem="hv4-b1-ExI" secondAttribute="centerX" id="PN9-0x-IAJ"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="KKX-WC-Y38"/>
                     </view>

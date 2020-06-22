@@ -24,6 +24,8 @@ class Alert: UIAlertController {
     var target: UIViewController!
     
     var provider: Provider!
+    
+    static var shared = Alert()
    
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
@@ -41,23 +43,25 @@ class Alert: UIAlertController {
     }
     
     func mode(_ provider: Provider) {
-        let alert: Alert
         switch provider {
         case .github:
-            alert = Alert(title: ALERT_TITLE, message: ALERT_MESSAGE, preferredStyle: .alert)
+            Alert.shared = Alert(title: ALERT_TITLE, message: ALERT_MESSAGE, preferredStyle: .alert)
             
             let dontAllow = UIAlertAction(title: "Don't Allow", style: .default) { _ in
                 self.target.dismiss(animated: true, completion: nil)
             }
             
-            let allow = UIAlertAction(title: "OK", style: .default) { _ in
+            let allow = UIAlertAction(title: "Allow", style: .default) { _ in
                 (self.target as! SignViewController).presentWebViewController(provider)
             }
             
-            alert.addAction(dontAllow)
-            alert.addAction(allow)
+            Alert.shared.addAction(dontAllow)
+            Alert.shared.addAction(allow)
         }
         
-        target.present(alert, animated: true, completion: nil)
+    }
+    
+    func present() {
+        target.present(Alert.shared, animated: true, completion: nil)
     }
 }

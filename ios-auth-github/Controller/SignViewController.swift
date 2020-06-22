@@ -16,14 +16,18 @@ class SignViewController: UIViewController {
     
     @IBOutlet var githubButton: UIButton!
     
-    var webView: WKWebView!
-    
-    var alert: Alert!
+    var accessToken: String!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupUI()
+        
+        if KeychainWrapper.standard.string(forKey: "access_token") != nil {
+            let vc = storyboard?.instantiateViewController(identifier: "workspaceViewController")
+            vc?.modalPresentationStyle = .fullScreen
+            present(vc!, animated: false, completion: nil)
+        }
     }
     
     // Setting up the UI
@@ -35,8 +39,8 @@ class SignViewController: UIViewController {
     
     // Web view configuration, called when a sign method has chosen
     func presentWebViewController(_ provider: Alert.Provider) {
-        // Initialize a web view
-        webView = WKWebView()
+        // Copycat an web view instance
+        let webView = AppDelegate.shared.webView
         // Create a web view controller
         let webVC = UIViewController()
         // Create a web view
@@ -56,21 +60,6 @@ class SignViewController: UIViewController {
             webView.bottomAnchor.constraint(equalTo: webVC.view.bottomAnchor),
             webView.trailingAnchor.constraint(equalTo: webVC.view.trailingAnchor)
         ])
-        // Generate random identifier for the authorization
-        let uuid = UUID().uuidString
-        
-        let urlRequest: URLRequest
-        switch provider {
-        case .github:
-            // Setting navigation bar title
-            webVC.navigationItem.title = "github.com"
-            // Complete url scheme for authorization
-            let url = "https://github.com/login/oauth/authorize?client_id=" + GithubConstants.CLIENT_ID + "&scope=" + GithubConstants.SCOPE + "&redirect_uri=" + GithubConstants.REDIRECT_URI + "&state=" + uuid
-            // Making a url request
-            urlRequest = URLRequest(url: URL(string: url)!)
-        }
-        // Loading the url request by web view
-        webView.load(urlRequest)
         // Create navigation controller
         let nav = UINavigationController(rootViewController: webVC)
         // Create done button for navigation
@@ -89,6 +78,23 @@ class SignViewController: UIViewController {
         // Setting navigation controller view presentation style
         nav.modalPresentationStyle = UIModalPresentationStyle.popover
         nav.modalTransitionStyle = .coverVertical
+        
+        // Generate random identifier for the authorization
+        let uuid = UUID().uuidString
+        // Create a url request
+        let urlRequest: URLRequest
+        switch provider {
+        case .github:
+            // Setting navigation bar title
+            webVC.navigationItem.title = "github.com"
+            // Complete url scheme for authorization
+            let url = "https://github.com/login/oauth/authorize?client_id=" + GithubConstants.CLIENT_ID + "&scope=" + GithubConstants.SCOPE + "&redirect_uri=" + GithubConstants.REDIRECT_URI + "&state=" + uuid
+            // Making a url request
+            urlRequest = URLRequest(url: URL(string: url)!)
+        }
+        
+        // Loading the url request by web view
+        webView.load(urlRequest)
         // Present view controller
         self.present(nav, animated: true, completion: nil)
     }
@@ -101,7 +107,7 @@ class SignViewController: UIViewController {
         }
         // Reading a web page’s title as it changes
         if keyPath == "title" {
-            if let title = webView.title {
+            if let title = AppDelegate.shared.webView.title {
                 print(title)
             }
         }
@@ -112,7 +118,7 @@ class SignViewController: UIViewController {
     
     // GitHub button action, presenting the alert and web view controllers
     @IBAction func githubButtonTapped(_ sender: UIButton) {
-        Alert(target: self, provider: .github)
+        Alert(target: self, provider: .github).present()
     }
     
     // Web view's Done button action
@@ -122,13 +128,13 @@ class SignViewController: UIViewController {
     
     // Web view's Refresh button action
     @objc func refreshButtonTapped() {
-        self.webView.reload()
+        AppDelegate.shared.webView.reload()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "segueWorkspace" {
             let destination = segue.destination as! WorkspaceViewController
-            destination.webView = webView
+            destination.accessToken = accessToken
         }
     }
 }
@@ -194,9 +200,11 @@ extension SignViewController: WKNavigationDelegate {
             let statusCode = (response as! HTTPURLResponse).statusCode
             if statusCode == 200 {
                 let results = try! JSONSerialization.jsonObject(with: data!, options: .allowFragments) as? [AnyHashable: Any]
-                let accessToken = results?["access_token"] as! String
+                self.accessToken = results?["access_token"] as? String
                 // Get user's id, display name, email, profile pic url
-                self.fetchGitHubUserProfile(accessToken: accessToken)
+                self.fetchGitHubUserProfile(accessToken: self.accessToken)
+                // Storing data by KeychainWrapper
+                KeychainWrapper.standard.set(self.accessToken, forKey: "access_token")
             }
         }
         task.resume()
