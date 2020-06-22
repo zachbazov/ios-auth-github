@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import WebKit
 
 // MARK: - UIViewController
 
@@ -14,9 +15,14 @@ class WorkspaceViewController: UIViewController {
     
     @IBOutlet weak var logoutButton: UIButton!
     
+    var webView: WKWebView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
+    }
+    
+    @IBAction func logoutButtonTapped(_ sender: Any) {
+        //webView.deleteCookies()
     }
 }

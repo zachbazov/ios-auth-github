@@ -25,7 +25,7 @@
         <!--Sign View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="SignViewController" customModule="SignMethods" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="SignViewController" customModule="ios_auth_github" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -62,7 +62,7 @@
         <!--Workspace View Controller-->
         <scene sceneID="TjQ-ht-46T">
             <objects>
-                <viewController id="aUc-lI-eJn" customClass="WorkspaceViewController" customModule="SignMethods" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="aUc-lI-eJn" customClass="WorkspaceViewController" customModule="ios_auth_github" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="hv4-b1-ExI">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -71,6 +71,7 @@
                                 <rect key="frame" x="334" y="76" width="48" height="30"/>
                                 <state key="normal" title="Logout"/>
                                 <connections>
+                                    <action selector="logoutButtonTapped:" destination="aUc-lI-eJn" eventType="touchUpInside" id="8Ce-Qc-yLm"/>
                                     <segue destination="1u2-Da-Z66" kind="unwind" identifier="unwindSegueSign" unwindAction="unwindToSignVCWithSegue:" id="ekR-Bu-IqB"/>
                                 </connections>
                             </button>

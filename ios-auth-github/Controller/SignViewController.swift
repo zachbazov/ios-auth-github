@@ -8,6 +8,7 @@
 
 import UIKit
 import WebKit
+import SwiftKeychainWrapper
 
 // MARK: - UIViewController
 
@@ -15,21 +16,27 @@ class SignViewController: UIViewController {
     
     @IBOutlet var githubButton: UIButton!
     
-    var webView = WKWebView()
+    var webView: WKWebView!
+    
+    var alert: Alert!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupUI()
     }
+    
     // Setting up the UI
     private func setupUI() {
         githubButton.layer.cornerRadius = 14.0
         githubButton.layer.borderWidth = 0.75
         githubButton.layer.borderColor = UIColor.black.cgColor
     }
+    
     // Web view configuration, called when a sign method has chosen
-    func presentWebViewController() {
+    func presentWebViewController(_ provider: Alert.Provider) {
+        // Initialize a web view
+        webView = WKWebView()
         // Create a web view controller
         let webVC = UIViewController()
         // Create a web view
@@ -51,10 +58,17 @@ class SignViewController: UIViewController {
         ])
         // Generate random identifier for the authorization
         let uuid = UUID().uuidString
-        // Complete url scheme for authorization
-        let url = "https://github.com/login/oauth/authorize?client_id=" + GithubConstants.CLIENT_ID + "&scope=" + GithubConstants.SCOPE + "&redirect_uri=" + GithubConstants.REDIRECT_URI + "&state=" + uuid
-        // Making a url request
-        let urlRequest = URLRequest(url: URL(string: url)!)
+        
+        let urlRequest: URLRequest
+        switch provider {
+        case .github:
+            // Setting navigation bar title
+            webVC.navigationItem.title = "github.com"
+            // Complete url scheme for authorization
+            let url = "https://github.com/login/oauth/authorize?client_id=" + GithubConstants.CLIENT_ID + "&scope=" + GithubConstants.SCOPE + "&redirect_uri=" + GithubConstants.REDIRECT_URI + "&state=" + uuid
+            // Making a url request
+            urlRequest = URLRequest(url: URL(string: url)!)
+        }
         // Loading the url request by web view
         webView.load(urlRequest)
         // Create navigation controller
@@ -68,8 +82,6 @@ class SignViewController: UIViewController {
         // Applying text attributes for title
         let attributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
         nav.navigationBar.titleTextAttributes = attributes
-        // Setting navigation bar title
-        webVC.navigationItem.title = "github.com"
         // Setting navigation bar style
         nav.navigationBar.isTranslucent = false
         nav.navigationBar.tintColor = UIColor.white
@@ -80,6 +92,7 @@ class SignViewController: UIViewController {
         // Present view controller
         self.present(nav, animated: true, completion: nil)
     }
+    
     // Observing operations
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         // Monitoring page loads
@@ -93,19 +106,45 @@ class SignViewController: UIViewController {
             }
         }
     }
+    
     // Returns to SignViewController from another controller
     @IBAction func unwindToSignVC(segue: UIStoryboardSegue) {}
-    // GitHub button action, presenting the web view controller
+    
+    // GitHub button action, presenting the alert and web view controllers
     @IBAction func githubButtonTapped(_ sender: UIButton) {
-        presentWebViewController()
+        Alert(target: self, provider: .github)
     }
+    
     // Web view's Done button action
     @objc func doneButtonTapped() {
         self.dismiss(animated: true, completion: nil)
     }
+    
     // Web view's Refresh button action
     @objc func refreshButtonTapped() {
         self.webView.reload()
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "segueWorkspace" {
+            let destination = segue.destination as! WorkspaceViewController
+            destination.webView = webView
+        }
+    }
+}
+
+// MARK: - WKWebView
+
+extension WKWebView {
+    // Web view's cookies removal
+    func deleteCookies() {
+        let cookieStore = configuration.websiteDataStore.httpCookieStore
+        
+        cookieStore.getAllCookies { cookies in
+            for cookie in cookies {
+                cookieStore.delete(cookie)
+            }
+        }
     }
 }
 
@@ -117,6 +156,7 @@ extension SignViewController: WKNavigationDelegate {
         self.requestForCallbackURL(request: navigationAction.request)
         decisionHandler(.allow)
     }
+    
     // Get the authorization code string after the '?code=' and before '&state='
     func requestForCallbackURL(request: URLRequest) {
         // Create a request url string
@@ -138,6 +178,7 @@ extension SignViewController: WKNavigationDelegate {
             }
         }
     }
+    
     // Request access token
     func githubRequestForAccessToken(authCode: String) {
         let grantType = "authorization_code"
@@ -160,6 +201,7 @@ extension SignViewController: WKNavigationDelegate {
         }
         task.resume()
     }
+    
     // Fetch user profile information
     func fetchGitHubUserProfile(accessToken: String) {
         let tokenURL = "https://api.github.com/user"
