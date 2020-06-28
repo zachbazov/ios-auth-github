@@ -8,7 +8,7 @@
 
 import UIKit
 
-struct GithubConstants {
+struct Credential {
 
     static let CLIENT_ID = "client_id"
     static let CLIENT_SECRET = "client_secret"

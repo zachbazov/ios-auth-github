@@ -13,7 +13,7 @@ import WebKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     struct shared {
-        static let webView = WKWebView()
+        static var webView = WebView()
     }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {

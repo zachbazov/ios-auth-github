@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -15,7 +15,8 @@
 		136DC80C2498CB5D0015821E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 136DC80A2498CB5D0015821E /* LaunchScreen.storyboard */; };
 		136DC8172498CBE60015821E /* WorkspaceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 136DC8162498CBE60015821E /* WorkspaceViewController.swift */; };
 		136DC8192498CBEF0015821E /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 136DC8182498CBEF0015821E /* Extension.swift */; };
-		136DC81B2498CBF60015821E /* Constant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 136DC81A2498CBF60015821E /* Constant.swift */; };
+		136DC81B2498CBF60015821E /* Credential.swift in Sources */ = {isa = PBXBuildFile; fileRef = 136DC81A2498CBF60015821E /* Credential.swift */; };
+		13A716AD24A2308400CFAABB /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13A716AC24A2308400CFAABB /* WebView.swift */; };
 		13A994F6249FAE7100D0F107 /* Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13A994F5249FAE7100D0F107 /* Alert.swift */; };
 		28076AAC3DDE8EDF7DE52840 /* Pods_ios_auth_github.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAF38E6318C8966E761964E /* Pods_ios_auth_github.framework */; };
 /* End PBXBuildFile section */
@@ -31,7 +32,8 @@
 		136DC80D2498CB5D0015821E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		136DC8162498CBE60015821E /* WorkspaceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkspaceViewController.swift; sourceTree = "<group>"; };
 		136DC8182498CBEF0015821E /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
-		136DC81A2498CBF60015821E /* Constant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constant.swift; sourceTree = "<group>"; };
+		136DC81A2498CBF60015821E /* Credential.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Credential.swift; sourceTree = "<group>"; };
+		13A716AC24A2308400CFAABB /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
 		13A994F5249FAE7100D0F107 /* Alert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alert.swift; sourceTree = "<group>"; };
 		3DAF38E6318C8966E761964E /* Pods_ios_auth_github.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ios_auth_github.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4F8D45A3C81E3198B787BE4D /* Pods-ios-auth-github.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios-auth-github.debug.xcconfig"; path = "Target Support Files/Pods-ios-auth-github/Pods-ios-auth-github.debug.xcconfig"; sourceTree = "<group>"; };
@@ -87,7 +89,7 @@
 			children = (
 				136DC80D2498CB5D0015821E /* Info.plist */,
 				136DC8182498CBEF0015821E /* Extension.swift */,
-				136DC81A2498CBF60015821E /* Constant.swift */,
+				136DC81A2498CBF60015821E /* Credential.swift */,
 			);
 			path = Support;
 			sourceTree = "<group>";
@@ -114,6 +116,7 @@
 			isa = PBXGroup;
 			children = (
 				13A994F5249FAE7100D0F107 /* Alert.swift */,
+				13A716AC24A2308400CFAABB /* WebView.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -124,7 +127,6 @@
 				4F8D45A3C81E3198B787BE4D /* Pods-ios-auth-github.debug.xcconfig */,
 				7C6F2205441A020F354E7ACD /* Pods-ios-auth-github.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -252,11 +254,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				136DC8192498CBEF0015821E /* Extension.swift in Sources */,
+				13A716AD24A2308400CFAABB /* WebView.swift in Sources */,
 				136DC8042498CB5C0015821E /* SignViewController.swift in Sources */,
 				136DC8002498CB5C0015821E /* AppDelegate.swift in Sources */,
 				136DC8172498CBE60015821E /* WorkspaceViewController.swift in Sources */,
 				136DC8022498CB5C0015821E /* SceneDelegate.swift in Sources */,
-				136DC81B2498CBF60015821E /* Constant.swift in Sources */,
+				136DC81B2498CBF60015821E /* Credential.swift in Sources */,
 				13A994F6249FAE7100D0F107 /* Alert.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

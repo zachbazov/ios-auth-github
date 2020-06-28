@@ -32,7 +32,7 @@ class WorkspaceViewController: UIViewController {
     }
     
     @IBAction func logoutButtonTapped(_ sender: Any) {
-        AppDelegate.shared.webView.deleteCookies()
+        //AppDelegate.shared.webView.deleteCookies()
         if KeychainWrapper.standard.string(forKey: "access_token") != nil {
             KeychainWrapper.standard.removeObject(forKey: "access_token")
         }

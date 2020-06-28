@@ -88,7 +88,7 @@ class SignViewController: UIViewController {
             // Setting navigation bar title
             webVC.navigationItem.title = "github.com"
             // Complete url scheme for authorization
-            let url = "https://github.com/login/oauth/authorize?client_id=" + GithubConstants.CLIENT_ID + "&scope=" + GithubConstants.SCOPE + "&redirect_uri=" + GithubConstants.REDIRECT_URI + "&state=" + uuid
+            let url = "https://github.com/login/oauth/authorize?client_id=" + Credential.CLIENT_ID + "&scope=" + Credential.SCOPE + "&redirect_uri=" + Credential.REDIRECT_URI + "&state=" + uuid
             // Making a url request
             urlRequest = URLRequest(url: URL(string: url)!)
         }
@@ -168,7 +168,7 @@ extension SignViewController: WKNavigationDelegate {
         // Create a request url string
         let requestURLString = (request.url?.absoluteString)! as String
         // Returns a boolean whether the string begins with a specific prefix
-        if requestURLString.hasPrefix(GithubConstants.REDIRECT_URI) {
+        if requestURLString.hasPrefix(Credential.REDIRECT_URI) {
             if requestURLString.contains("code=") {
                 // Finds and returns the range of the first occurrence of a given string within a given range of the string
                 if let range = requestURLString.range(of: "=") {
@@ -189,9 +189,9 @@ extension SignViewController: WKNavigationDelegate {
     func githubRequestForAccessToken(authCode: String) {
         let grantType = "authorization_code"
         // Set the POST parameters.
-        let postParams = "grant_type=" + grantType + "&code=" + authCode + "&client_id=" + GithubConstants.CLIENT_ID + "&client_secret=" + GithubConstants.CLIENT_SECRET
+        let postParams = "grant_type=" + grantType + "&code=" + authCode + "&client_id=" + Credential.CLIENT_ID + "&client_secret=" + Credential.CLIENT_SECRET
         let postData = postParams.data(using: String.Encoding.utf8)
-        let request = NSMutableURLRequest(url: URL(string: GithubConstants.TOKENURL)!)
+        let request = NSMutableURLRequest(url: URL(string: Credential.TOKENURL)!)
         request.httpMethod = "POST"
         request.httpBody = postData
         request.addValue("application/json", forHTTPHeaderField: "Accept")
