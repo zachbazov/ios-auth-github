@@ -79,17 +79,25 @@
                                     <segue destination="1u2-Da-Z66" kind="unwind" identifier="unwindSegueSign" unwindAction="unwindToSignVCWithSegue:" id="ekR-Bu-IqB"/>
                                 </connections>
                             </button>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="xSt-Tv-Ich">
+                                <rect key="frame" x="87" y="108" width="240" height="256"/>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstItem="XhL-WE-bN2" firstAttribute="top" secondItem="xSt-Tv-Ich" secondAttribute="bottom" constant="64" id="8nt-8E-Gw2"/>
+                            <constraint firstItem="KKX-WC-Y38" firstAttribute="trailing" secondItem="xSt-Tv-Ich" secondAttribute="trailing" constant="87" id="Btl-0k-g3k"/>
                             <constraint firstItem="XhL-WE-bN2" firstAttribute="centerY" secondItem="hv4-b1-ExI" secondAttribute="centerY" id="GGO-3i-83E"/>
                             <constraint firstItem="XhL-WE-bN2" firstAttribute="centerX" secondItem="hv4-b1-ExI" secondAttribute="centerX" id="PN9-0x-IAJ"/>
+                            <constraint firstItem="xSt-Tv-Ich" firstAttribute="leading" secondItem="KKX-WC-Y38" secondAttribute="leading" constant="87" id="TVr-MI-gjy"/>
+                            <constraint firstItem="xSt-Tv-Ich" firstAttribute="top" secondItem="KKX-WC-Y38" secondAttribute="top" constant="64" id="tZC-hr-Yof"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="KKX-WC-Y38"/>
                     </view>
                     <navigationItem key="navigationItem" id="aM0-hQ-nI5"/>
                     <connections>
                         <outlet property="logoutButton" destination="XhL-WE-bN2" id="woT-H5-J2F"/>
+                        <outlet property="userIV" destination="xSt-Tv-Ich" id="b2w-CX-ieU"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="y76-dq-IaS" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

@@ -16,136 +16,60 @@ class SignViewController: UIViewController {
     
     @IBOutlet var githubButton: UIButton!
     
-    var accessToken: String!
+    var userProfile = [String: Any]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupUI()
-        
-        if KeychainWrapper.standard.string(forKey: "access_token") != nil {
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        if KeychainWrapper.standard.dictionary(forKey: "cache_github_user_profile") != nil {
             let vc = storyboard?.instantiateViewController(identifier: "workspaceViewController")
             vc?.modalPresentationStyle = .fullScreen
             present(vc!, animated: false, completion: nil)
         }
     }
     
-    // Setting up the UI
     private func setupUI() {
         githubButton.layer.cornerRadius = 14.0
         githubButton.layer.borderWidth = 0.75
         githubButton.layer.borderColor = UIColor.black.cgColor
     }
     
-    // Web view configuration, called when a sign method has chosen
     func presentWebViewController(_ provider: Alert.Provider) {
-        // Copycat an web view instance
-        let webView = AppDelegate.shared.webView
-        // Create a web view controller
-        let webVC = UIViewController()
-        // Create a web view
-        webView.navigationDelegate = self
-        // Monitoring page loads
-        webView.addObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), options: .new, context: nil)
-        // Reading a web page’s title as it changes
-        webView.addObserver(self, forKeyPath: #keyPath(WKWebView.title), options: .new, context: nil)
-        // Adding the view to the hierarchy
-        webVC.view.addSubview(webView)
-        // Allow using custom constraints
-        webView.translatesAutoresizingMaskIntoConstraints = false
-        // Applying constraints
-        NSLayoutConstraint.activate([
-            webView.topAnchor.constraint(equalTo: webVC.view.topAnchor),
-            webView.leadingAnchor.constraint(equalTo: webVC.view.leadingAnchor),
-            webView.bottomAnchor.constraint(equalTo: webVC.view.bottomAnchor),
-            webView.trailingAnchor.constraint(equalTo: webVC.view.trailingAnchor)
-        ])
-        // Create navigation controller
-        let nav = UINavigationController(rootViewController: webVC)
-        // Create done button for navigation
-        let done = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(self.doneButtonTapped))
-        webVC.navigationItem.leftBarButtonItem = done
-        // Create refresh button for navigationn
-        let refresh = UIBarButtonItem(barButtonSystemItem: .refresh, target: self, action: #selector(self.refreshButtonTapped))
-        webVC.navigationItem.rightBarButtonItem = refresh
-        // Applying text attributes for title
-        let attributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
-        nav.navigationBar.titleTextAttributes = attributes
-        // Setting navigation bar style
-        nav.navigationBar.isTranslucent = false
-        nav.navigationBar.tintColor = UIColor.white
-        nav.navigationBar.barTintColor = UIColor.colorFromHex("#333333")
-        // Setting navigation controller view presentation style
-        nav.modalPresentationStyle = UIModalPresentationStyle.popover
-        nav.modalTransitionStyle = .coverVertical
-        
-        // Generate random identifier for the authorization
-        let uuid = UUID().uuidString
-        // Create a url request
-        let urlRequest: URLRequest
-        switch provider {
-        case .github:
-            // Setting navigation bar title
-            webVC.navigationItem.title = "github.com"
-            // Complete url scheme for authorization
-            let url = "https://github.com/login/oauth/authorize?client_id=" + Credential.CLIENT_ID + "&scope=" + Credential.SCOPE + "&redirect_uri=" + Credential.REDIRECT_URI + "&state=" + uuid
-            // Making a url request
-            urlRequest = URLRequest(url: URL(string: url)!)
-        }
-        
-        // Loading the url request by web view
-        webView.load(urlRequest)
-        // Present view controller
-        self.present(nav, animated: true, completion: nil)
+        WebView(target: self, provider: .github).mode(.github)
     }
     
-    // Observing operations
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        // Monitoring page loads
-        if keyPath == "estimatedProgress" {
-            //print(Float(web.estimatedProgress))
-        }
-        // Reading a web page’s title as it changes
-        if keyPath == "title" {
-            if let title = AppDelegate.shared.webView.title {
-                print(title)
-            }
-        }
-    }
-    
-    // Returns to SignViewController from another controller
     @IBAction func unwindToSignVC(segue: UIStoryboardSegue) {}
     
-    // GitHub button action, presenting the alert and web view controllers
     @IBAction func githubButtonTapped(_ sender: UIButton) {
         Alert(target: self, provider: .github).present()
     }
     
-    // Web view's Done button action
     @objc func doneButtonTapped() {
         self.dismiss(animated: true, completion: nil)
     }
     
-    // Web view's Refresh button action
     @objc func refreshButtonTapped() {
-        AppDelegate.shared.webView.reload()
+        WebView.shared.reload()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "segueWorkspace" {
-            let destination = segue.destination as! WorkspaceViewController
-            destination.accessToken = accessToken
+            KeychainWrapper.standard.set(userProfile, forKey: "cache_github_user_profile")
         }
     }
 }
 
 // MARK: - WKWebView
 
-extension WKWebView {
-    // Web view's cookies removal
+extension WebView {
+    
     func deleteCookies() {
         let cookieStore = configuration.websiteDataStore.httpCookieStore
-        
         cookieStore.getAllCookies { cookies in
             for cookie in cookies {
                 cookieStore.delete(cookie)
@@ -157,27 +81,26 @@ extension WKWebView {
 // MARK: - WKNavigationDelegate
 
 extension SignViewController: WKNavigationDelegate {
-    // Specifying the policy for given url requests whether to allow access or not
+    
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-        self.requestForCallbackURL(request: navigationAction.request)
+        self.requestCallbackURL(request: navigationAction.request)
         decisionHandler(.allow)
     }
+}
+
+// MARK: - GitHub API
+
+extension SignViewController {
     
-    // Get the authorization code string after the '?code=' and before '&state='
-    func requestForCallbackURL(request: URLRequest) {
-        // Create a request url string
+    func requestCallbackURL(request: URLRequest) {
         let requestURLString = (request.url?.absoluteString)! as String
-        // Returns a boolean whether the string begins with a specific prefix
         if requestURLString.hasPrefix(Credential.REDIRECT_URI) {
             if requestURLString.contains("code=") {
-                // Finds and returns the range of the first occurrence of a given string within a given range of the string
                 if let range = requestURLString.range(of: "=") {
                     let code = requestURLString[range.upperBound...]
                     if let range = code.range(of: "&state=") {
                         let authCode = code[..<range.lowerBound]
-                        // Request access token
-                        githubRequestForAccessToken(authCode: String(authCode))
-                        // Close GitHub Auth ViewController after getting Authorization Code
+                        requestAccessToken(authCode: String(authCode))
                         self.dismiss(animated: true, completion: nil)
                     }
                 }
@@ -185,10 +108,8 @@ extension SignViewController: WKNavigationDelegate {
         }
     }
     
-    // Request access token
-    func githubRequestForAccessToken(authCode: String) {
+    func requestAccessToken(authCode: String) {
         let grantType = "authorization_code"
-        // Set the POST parameters.
         let postParams = "grant_type=" + grantType + "&code=" + authCode + "&client_id=" + Credential.CLIENT_ID + "&client_secret=" + Credential.CLIENT_SECRET
         let postData = postParams.data(using: String.Encoding.utf8)
         let request = NSMutableURLRequest(url: URL(string: Credential.TOKENURL)!)
@@ -200,46 +121,59 @@ extension SignViewController: WKNavigationDelegate {
             let statusCode = (response as! HTTPURLResponse).statusCode
             if statusCode == 200 {
                 let results = try! JSONSerialization.jsonObject(with: data!, options: .allowFragments) as? [AnyHashable: Any]
-                self.accessToken = results?["access_token"] as? String
-                // Get user's id, display name, email, profile pic url
-                self.fetchGitHubUserProfile(accessToken: self.accessToken)
-                // Storing data by KeychainWrapper
-                KeychainWrapper.standard.set(self.accessToken, forKey: "access_token")
+                let accessToken = results?["access_token"] as? String
+                self.requestUserProfile(accessToken: accessToken ?? "")
             }
         }
         task.resume()
     }
     
-    // Fetch user profile information
-    func fetchGitHubUserProfile(accessToken: String) {
+    func requestUserProfile(accessToken: String) {
         let tokenURL = "https://api.github.com/user"
         let verify: NSURL = NSURL(string: tokenURL)!
         let request: NSMutableURLRequest = NSMutableURLRequest(url: verify as URL)
-        // Setting a header
         request.addValue("Bearer " + accessToken, forHTTPHeaderField: "Authorization")
         let task = URLSession.shared.dataTask(with: request as URLRequest) { data, _, error in
             if error == nil {
                 let result = try! JSONSerialization.jsonObject(with: data!, options: .allowFragments) as? [AnyHashable: Any]
-                // AccessToken
-                print("GitHub Access Token: \(accessToken)")
-                // GitHub Id
-                let githubId: Int! = (result?["id"] as! Int)
-                print("GitHub Id: \(githubId ?? 0)")
-                // GitHub Display Name
-                let githubDisplayName: String! = (result?["login"] as! String)
-                print("GitHub Display Name: \(githubDisplayName ?? "")")
-                // GitHub Email
-                let githubEmail: String? = (result?["email"] as? String)
-                print("GitHub Email: \(githubEmail ?? "")")
-                // GitHub Profile Avatar URL
-                let githubAvatarURL: String! = (result?["avatar_url"] as! String)
-                print("Github Profile Avatar URL: \(githubAvatarURL ?? "")")
-                // Perform segue
+                let id: Int! = (result?["id"] as! Int)
+                let displayName: String! = (result?["login"] as! String)
+                let email: String? = (result?["email"] as? String)
+                let avatarURL: String! = (result?["avatar_url"] as! String)
+                self.userProfile["id"] = id
+                self.userProfile["display_name"] = displayName
+                self.userProfile["email"] = email
+                self.userProfile["avatar_url"] = avatarURL
+                self.userProfile["access_token"] = accessToken
                 DispatchQueue.main.async {
                     self.performSegue(withIdentifier: "segueWorkspace", sender: self)
                 }
             }
         }
         task.resume()
+    }
+}
+
+// MARK: - KeychainWrapper
+
+extension KeychainWrapper {
+    
+    func set(_ value: [String: Any], forKey key: String) {
+        do {
+            try set(NSKeyedArchiver.archivedData(withRootObject: value, requiringSecureCoding: false), forKey: key)
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+
+    func dictionary(forKey key: String) -> [String: Any]? {
+        if let storedData = self.data(forKey: key) {
+            do {
+                return try NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(storedData) as? [String : Any]
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
+        return nil
     }
 }

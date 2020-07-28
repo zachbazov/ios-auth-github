@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1357502024AA591F00679812 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1357501F24AA591F00679812 /* User.swift */; };
 		136DC8002498CB5C0015821E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 136DC7FF2498CB5C0015821E /* AppDelegate.swift */; };
 		136DC8022498CB5C0015821E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 136DC8012498CB5C0015821E /* SceneDelegate.swift */; };
 		136DC8042498CB5C0015821E /* SignViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 136DC8032498CB5C0015821E /* SignViewController.swift */; };
@@ -22,6 +23,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1357501F24AA591F00679812 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		136DC7FC2498CB5C0015821E /* ios-auth-github.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ios-auth-github.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		136DC7FF2498CB5C0015821E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		136DC8012498CB5C0015821E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -73,13 +75,12 @@
 		136DC7FE2498CB5C0015821E /* ios-auth-github */ = {
 			isa = PBXGroup;
 			children = (
-				136DC7FF2498CB5C0015821E /* AppDelegate.swift */,
-				136DC8012498CB5C0015821E /* SceneDelegate.swift */,
-				136DC8082498CB5D0015821E /* Assets.xcassets */,
+				13CF9CF524A96984003D35D3 /* Application */,
 				13A994F4249FAE5B00D0F107 /* Model */,
 				136DC8152498CB6B0015821E /* View */,
 				136DC8142498CB690015821E /* Controller */,
 				136DC8132498CB660015821E /* Support */,
+				136DC8082498CB5D0015821E /* Assets.xcassets */,
 			);
 			path = "ios-auth-github";
 			sourceTree = "<group>";
@@ -117,8 +118,18 @@
 			children = (
 				13A994F5249FAE7100D0F107 /* Alert.swift */,
 				13A716AC24A2308400CFAABB /* WebView.swift */,
+				1357501F24AA591F00679812 /* User.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		13CF9CF524A96984003D35D3 /* Application */ = {
+			isa = PBXGroup;
+			children = (
+				136DC7FF2498CB5C0015821E /* AppDelegate.swift */,
+				136DC8012498CB5C0015821E /* SceneDelegate.swift */,
+			);
+			path = Application;
 			sourceTree = "<group>";
 		};
 		CCF874038B952E8D0D3341D2 /* Pods */ = {
@@ -258,6 +269,7 @@
 				136DC8042498CB5C0015821E /* SignViewController.swift in Sources */,
 				136DC8002498CB5C0015821E /* AppDelegate.swift in Sources */,
 				136DC8172498CBE60015821E /* WorkspaceViewController.swift in Sources */,
+				1357502024AA591F00679812 /* User.swift in Sources */,
 				136DC8022498CB5C0015821E /* SceneDelegate.swift in Sources */,
 				136DC81B2498CBF60015821E /* Credential.swift in Sources */,
 				13A994F6249FAE7100D0F107 /* Alert.swift in Sources */,
