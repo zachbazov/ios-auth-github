@@ -12,18 +12,16 @@ import SwiftKeychainWrapper
 
 // MARK: - UIViewController
 
-struct ServerResponse: Decodable {
-    var results: Int!
-    var status: String!
-    var users: [String:String]!
-}
-
-
 class WorkspaceViewController: UIViewController {
     
     @IBOutlet weak var logoutButton: UIButton!
     
     @IBOutlet weak var userIV: UIImageView!
+    @IBOutlet weak var idLabel: UILabel!
+    @IBOutlet weak var nameLabel: UILabel!
+    @IBOutlet weak var emailLabel: UILabel!
+    @IBOutlet weak var avatarLabel: UILabel!
+    @IBOutlet weak var tokenLabel: UILabel!
     
     var userProfile: [String: Any]!
     
@@ -33,38 +31,6 @@ class WorkspaceViewController: UIViewController {
         super.viewDidLoad()
         
         setupUI()
-        
-        var request = URLRequest(url: URL(string: "http://localhost:3000/api/v1/users")!)
-        request.httpMethod = "GET"
-        let session = URLSession(configuration: URLSessionConfiguration.default)
-        let task: URLSessionDataTask = session.dataTask(with: request as URLRequest) { (data, response, _) in
-            let statusCode = (response as? HTTPURLResponse)?.statusCode
-            if statusCode == 200 {
-                
-                let rootObject = try? JSONSerialization.jsonObject(with: data!, options: []) as? [String: Any]
-                
-                guard rootObject != nil else { return }
-                
-                print(rootObject!)
-                
-                let dataJSON = rootObject?["data"]
-                let dataData = try? JSONSerialization.data(withJSONObject: dataJSON!, options: [])
-                let dataObject = try? JSONSerialization.jsonObject(with: dataData!, options: []) as? [String: Any]
-                
-                let usersJSON = dataObject?["users"]
-                let usersData = try? JSONSerialization.data(withJSONObject: usersJSON!, options: [])
-                let usersObject = try? JSONSerialization.jsonObject(with: usersData!, options: []) as? [Any]
-                print(usersObject!)
-                
-                let dc = try? JSONDecoder().decode([User].self, from: usersData!)
-                
-                let user = dc![0]
-                print(user.email)
-            } else {
-                print("404")
-            }
-        }
-        task.resume()
     }
     
     // Setting up the UI
@@ -77,15 +43,21 @@ class WorkspaceViewController: UIViewController {
         guard userProfile != nil else { return }
         userIV.image = UIImage(data: try! Data(contentsOf: URL(string: userProfile?["avatar_url"] as! String)!))
         
-        let id = userProfile?["id"]
-        let email = userProfile?["email"]
-        let displayName = userProfile?["display_name"]
-        let avatarURL = userProfile?["avatar_url"]
-        let accessToken = userProfile?["access_token"]
+        let id = self.userProfile?["id"] as! Int
+        let email = self.userProfile?["email"] as! String
+        let displayName = self.userProfile?["display_name"] as! String
+        let avatarURL = self.userProfile?["avatar_url"] as! String
+        let accessToken = self.userProfile?["access_token"] as! String
+        
+        self.idLabel.text = String(id)
+        self.nameLabel.text = displayName
+        self.emailLabel.text = email
+        self.tokenLabel.text = accessToken
+        self.avatarLabel.text = avatarURL
     }
     
     @IBAction func logoutButtonTapped(_ sender: Any) {
-        //WebView.shared.deleteCookies()
+        WebView.shared.deleteCookies()
         if KeychainWrapper.standard.dictionary(forKey: "cache_github_user_profile") != nil {
             KeychainWrapper.standard.removeObject(forKey: "cache_github_user_profile")
         }
